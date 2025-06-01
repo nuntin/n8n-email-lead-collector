@@ -1,17 +1,18 @@
+
 # 📧 Email Lead Collector (n8n)
 
 This automation flow allows you to scrape emails from any list of websites and export the result as a downloadable CSV file.
 
 ✅ Built using official n8n nodes only  
 ✅ No OAuth / external API required  
-✅ No community nodes used
+✅ No community nodes used  
 
 ---
 
 ## 🧩 Features
 
 - Input list of website URLs
-- Scrape email addresses from HTML
+- Scrape email addresses from HTML content
 - Filter duplicate & invalid emails
 - Export result as CSV to `./emails.csv`
 - Works on n8n v1.94.1 and above
@@ -32,24 +33,51 @@ This automation flow allows you to scrape emails from any list of websites and e
    ```
 
 3. Run the full workflow
-4. Result file `emails.csv` will be saved in the current working directory
+4. The result file `emails.csv` will be saved in your current working directory
+
+---
+
+## 💡 Real-world Use Cases
+
+Here’s how others can use this tool in practice:
+
+- **Marketing**  
+  Generate cold email lists by scanning event websites, directories, or partner pages.
+
+- **Sales Prospecting**  
+  Find potential client emails from business listings or company sites.
+
+- **Hiring / Freelance**  
+  Extract contact emails from agency pages or freelance portfolios.
+
+- **Lead Collection**  
+  Gather leads from local service directories (plumbing, design, tutors, etc.).
+
+- **Education & Research**  
+  Collect contact points for research studies, academic outreach, or surveys.
+
+- **NGO / Outreach**  
+  Collect emails for campaign targeting from relevant NGO or local org sites.
 
 ---
 
 ## ⚠️ Notes on File Saving
 
 - This flow saves to: `./emails.csv`  
-  *(current directory where n8n is running)*
+  *(relative to where n8n is running)*
 
 ### 🐳 If using Docker:
 
 ```bash
-docker run -it --rm   -v $(pwd)/output:/data   -e N8N_EDITOR_BASE_URL=http://localhost:5678   -p 5678:5678 n8nio/n8n
+docker run -it --rm \
+  -v $(pwd)/output:/data \
+  -e N8N_EDITOR_BASE_URL=http://localhost:5678 \
+  -p 5678:5678 n8nio/n8n
 ```
 
 Then change `File Path` in Save File node to:
 
-```bash
+```
 /data/emails.csv
 ```
 
@@ -70,8 +98,11 @@ Flow นี้ใช้สำหรับดึงอีเมลจากเว
 
 ## 📁 Files
 
-- `email-lead-collector.json` — Verified Flow file
-- `README.md` — This instruction file (EN/TH)---
+- `email-lead-collector.json` — The workflow file
+- `demo.gif` — Screencast example (optional)
+- `README.md` — This file
+
+---
 
 ## 🛠 Troubleshooting
 
@@ -79,28 +110,25 @@ Flow นี้ใช้สำหรับดึงอีเมลจากเว
 - This happens when the folder path doesn't exist.
 - Solution: Make sure the directory in the `Save File` node exists.
   - For local: use `./emails.csv`
-  - For Docker: mount the path correctly and use `/data/emails.csv`
+  - For Docker: use `/data/emails.csv`
 
 ### ❌ No Emails Found
-- Try using websites that contain visible email addresses in the page.
-- Ensure "Always Output Data" is enabled in `Settings`.
+- Try websites with visible email addresses in the page.
+- Enable "Always Output Data" in `Settings`.
 
 ---
 
-## 🎞 Example GIF
+## 🎞 Demo GIF
 
-> (Add your own screen recording here using [ScreenToGif](https://www.screentogif.com/))
-
-You can place your GIF inside the repo and embed like:
+> Add your own screen recording using [ScreenToGif](https://www.screentogif.com/)
 
 
-![Demo GIF](demo.gif)
+![Demo](demo.gif)
 
 
 ---
 
 ## 🪪 License
 
-This project is released under the [MIT License](https://opensource.org/licenses/MIT).
-
-You are free to use, modify, and distribute this workflow, including for commercial purposes. No warranty provided.
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).  
+You may use, modify, and distribute this project commercially or personally.
