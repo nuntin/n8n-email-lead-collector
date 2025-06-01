@@ -93,9 +93,9 @@ Flow นี้ใช้สำหรับดึงอีเมลจากเว
 
 You can place your GIF inside the repo and embed like:
 
-```markdown
+
 ![Demo GIF](demo.gif)
-```
+
 
 ---
 
