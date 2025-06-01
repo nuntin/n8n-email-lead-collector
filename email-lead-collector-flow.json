@@ -1,0 +1,187 @@
+{
+  "name": "n8n-email-lead-collector",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "9bf485c3-fafb-41bd-83e4-58b88da6847f"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "websiteList",
+              "value": "https://www.djangoproject.com,https://www.python.org"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Website List",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c11f48e3-0ef1-4049-b908-7f9153affe48"
+    },
+    {
+      "parameters": {
+        "functionCode": "const input = $json[\"websiteList\"];\nreturn input.split(\",\").map(url => ({ json: { url: url.trim() } }));"
+      },
+      "name": "Split to URLs",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "e11f310a-a842-4c5f-9190-1080a131c0ae"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.url}}",
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": false
+        }
+      },
+      "name": "Request Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "73dbe1c8-8a6e-46f9-9578-9c19233c237c"
+    },
+    {
+      "parameters": {
+        "functionCode": "\nconst html = $json[\"body\"] || $json[\"data\"] || $json[\"response\"] || \"\";\nconst url = $json[\"url\"] || \"\";\n\nconst matches = html.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g) || [];\n\nreturn (matches.length > 0)\n  ? matches.map(email => ({ json: { email, source: url } }))\n  : [{ json: { email: null, source: url } }];\n"
+      },
+      "name": "Extract Emails",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        600,
+        0
+      ],
+      "id": "b5a32f1f-3f5f-4768-9a77-2f923c03fbac"
+    },
+    {
+      "parameters": {
+        "functionCode": "\nconst items = $input.all();\nlet csv = \"email,source\\n\";\n\nfor (const item of items) {\n  const email = item.json.email || \"\";\n  const source = item.json.source || \"\";\n  csv += `\"${email}\",\"${source}\"\\n`;\n}\n\nreturn [{\n  binary: {\n    data: {\n      data: Buffer.from(csv, \"utf-8\").toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: \"emails.csv\"\n    }\n  }\n}];\n"
+      },
+      "name": "Build CSV Binary",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "ff2e82cc-e4be-4444-af41-dfe34d3e9ff1"
+    },
+    {
+      "parameters": {
+        "fileName": "./emails.csv",
+        "options": {}
+      },
+      "name": "Save File",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        0
+      ],
+      "id": "c0e062b8-b9ea-4020-99fb-8d4d6f229a3c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Website List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Website List": {
+      "main": [
+        [
+          {
+            "node": "Split to URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split to URLs": {
+      "main": [
+        [
+          {
+            "node": "Request Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Website": {
+      "main": [
+        [
+          {
+            "node": "Extract Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Emails": {
+      "main": [
+        [
+          {
+            "node": "Build CSV Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build CSV Binary": {
+      "main": [
+        [
+          {
+            "node": "Save File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "944f58ee-c00c-4590-9008-e64752fd9be5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "34cf555204708252a3ea240491ab915e21e5da80f4b5c80d3f9e8a71fbbe0cc5"
+  },
+  "id": "V1coZ1WxAPYkET6Z",
+  "tags": []
+}

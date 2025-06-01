@@ -1,85 +1,106 @@
+# 📧 Email Lead Collector (n8n)
 
-# 📬 email-lead-collector
+This automation flow allows you to scrape emails from any list of websites and export the result as a downloadable CSV file.
 
-Extract emails from any public website and save them directly into a CSV file — fully automated using n8n.
-
-🔧 This project is beginner-friendly, useful for freelancers, marketers, and small business owners who want to collect leads without coding.
-
----
-
-## 🌟 Features / คุณสมบัติเด่น
-
-- 🌐 Input any website URL (e.g., https://example.com)
-- 🕷️ Scrape all visible emails from the HTML
-- 📤 Export results to a clean `.csv` file
-- 🧩 100% native nodes (no community node required)
-- 🔐 Safe headers (User-Agent spoofing)
-- 🐞 Prevents common n8n errors: undefined split, bad response body, binary write error
+✅ Built using official n8n nodes only  
+✅ No OAuth / external API required  
+✅ No community nodes used
 
 ---
 
-## 📸 Demo (GIF)
+## 🧩 Features
 
-![demo](./demo/email-lead-collector-demo.gif)
-
----
-
-## 🚀 How to Use / วิธีใช้งาน
-
-1. 🧱 **Manual Trigger** → Run flow manually or schedule it
-2. 🔧 **Set Node** → Input a list of target URLs
-```json
-{
-  "websiteList": "https://example.com, https://anotherdomain.com"
-}
-```
-3. 🧠 **Function Node** → Split and clean the list
-4. 🌍 **HTTP Request Node** → Fetch each web page (Response Format: `String`)
-5. 🔍 **Regex Match Node** → Extract valid emails
-6. 📝 **Write Binary File Node** → Save results as `emails.csv`
+- Input list of website URLs
+- Scrape email addresses from HTML
+- Filter duplicate & invalid emails
+- Export result as CSV to `./emails.csv`
+- Works on n8n v1.94.1 and above
 
 ---
 
-## 📥 Output File / ผลลัพธ์
+## 🚀 Usage (Step-by-step)
 
-- File: `emails.csv`
-- Format:
-```csv
-email,source
-john@example.com,https://example.com
-info@anotherdomain.com,https://anotherdomain.com
+1. Import the provided `email-lead-collector.json` into n8n
+2. Click the first node (Set) → enter websites in this format:
+
+   ```json
+   [
+     "https://www.djangoproject.com",
+     "https://www.python.org",
+     "https://www.openai.com"
+   ]
+   ```
+
+3. Run the full workflow
+4. Result file `emails.csv` will be saved in the current working directory
+
+---
+
+## ⚠️ Notes on File Saving
+
+- This flow saves to: `./emails.csv`  
+  *(current directory where n8n is running)*
+
+### 🐳 If using Docker:
+
+```bash
+docker run -it --rm   -v $(pwd)/output:/data   -e N8N_EDITOR_BASE_URL=http://localhost:5678   -p 5678:5678 n8nio/n8n
 ```
 
----
+Then change `File Path` in Save File node to:
 
-## 📦 What’s Included / ใน ZIP นี้มี
-
-- `email-lead-collector.json` → n8n Flow
-- `README.md` → This file
-- `demo/email-lead-collector-demo.gif` → Preview
-- Optional CSV sample
+```bash
+/data/emails.csv
+```
 
 ---
 
-## 📌 Note / หมายเหตุ
+## 🇹🇭 คำอธิบายภาษาไทย
 
-- This flow is designed to work on n8n `v1.94+`, no community node required
-- Tested in both Docker and desktop version
+Flow นี้ใช้สำหรับดึงอีเมลจากเว็บไซต์ต่าง ๆ และบันทึกผลลัพธ์เป็นไฟล์ `.csv` โดยไม่ต้องใช้ API หรือระบบภายนอก
 
----
+- ป้อน URL ของเว็บไซต์ที่ต้องการ
+- ดึง email ที่พบจาก HTML โดยตรง
+- บันทึกผลลัพธ์ลงใน `./emails.csv`
 
-## 🧠 Who is this for? / เหมาะกับใคร?
-
-- Marketers doing outreach
-- Freelancers generating leads
-- Devs testing scraping workflow
-- Anyone building email lists (legally and responsibly)
+✅ เหมาะสำหรับนักการตลาด / นักพัฒนา / เจ้าของธุรกิจที่ต้องการ Lead  
+✅ ไม่มีขั้นตอน OAuth ให้ยุ่งยาก
 
 ---
 
-## 🛠️ Dev Info
+## 📁 Files
 
-- Author: Nuntin Padmadin
-- GitHub: [github.com/Nuntin/n8n-devops-bots](https://github.com/Nuntin/n8n-devops-bots)
+- `email-lead-collector.json` — Verified Flow file
+- `README.md` — This instruction file (EN/TH)---
+
+## 🛠 Troubleshooting
+
+### ❌ Error: `ENOENT: no such file or directory`
+- This happens when the folder path doesn't exist.
+- Solution: Make sure the directory in the `Save File` node exists.
+  - For local: use `./emails.csv`
+  - For Docker: mount the path correctly and use `/data/emails.csv`
+
+### ❌ No Emails Found
+- Try using websites that contain visible email addresses in the page.
+- Ensure "Always Output Data" is enabled in `Settings`.
 
 ---
+
+## 🎞 Example GIF
+
+> (Add your own screen recording here using [ScreenToGif](https://www.screentogif.com/))
+
+You can place your GIF inside the repo and embed like:
+
+```markdown
+![Demo GIF](demo.gif)
+```
+
+---
+
+## 🪪 License
+
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+You are free to use, modify, and distribute this workflow, including for commercial purposes. No warranty provided.

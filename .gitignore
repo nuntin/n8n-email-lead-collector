@@ -1,0 +1,17 @@
+# Ignore typical n8n data/runtime
+node_modules/
+.env
+*.sqlite
+*.log
+output/
+data/
+
+# Ignore OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Ignore exported files
+emails.csv
+demo.gif
